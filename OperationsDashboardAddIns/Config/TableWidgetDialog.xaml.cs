@@ -84,13 +84,18 @@ namespace OperationsDashboardAddIns.Config
 
     private void OnOkButtonClick(object sender, RoutedEventArgs e)
     {
-      //DataSource = DataSourceSelector.SelectedDataSource;
       SelectedFeatureActions = FeatureActionList.SelectedFeatureActions;
-        //if(SelectedFeatureActions.Any(fa=>fa is SearchNearbyFeatureAction))
-        //{
-        //    SearchNearbyFeatureAction searchNearbyFeatureAction = SelectedFeatureActions.Where(fa => fa is SearchNearbyFeatureAction).FirstOrDefault() as SearchNearbyFeatureAction;
+        //documented issue-FeatureActionList.Selectedfeatureactions doesnt seem to hold the latest config values for a custom feature action and 
+        //hence we are copying the config values from all feature actions 
+      if (SelectedFeatureActions.Any(fa => fa is SearchNearbyFeatureAction))
+      {
+          SearchNearbyFeatureAction searchNearbyFeatureAction = SelectedFeatureActions.Where(fa => fa is SearchNearbyFeatureAction).FirstOrDefault() as SearchNearbyFeatureAction;
+          SearchNearbyFeatureAction searchNearbyFeatureActionAll = FeatureActionList.FeatureActions.Where(fac => fac is SearchNearbyFeatureAction).FirstOrDefault() as SearchNearbyFeatureAction;
+          searchNearbyFeatureAction.BufferDistance = searchNearbyFeatureActionAll.BufferDistance;
+          searchNearbyFeatureAction.BufferUnit = searchNearbyFeatureActionAll.BufferUnit;
+          searchNearbyFeatureAction.TargetDataSourceId = searchNearbyFeatureActionAll.TargetDataSourceId;
 
-        //}
+      }
             
       Caption = CaptionTextBox.Text;
       DialogResult = true;

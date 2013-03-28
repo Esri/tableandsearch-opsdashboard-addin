@@ -41,31 +41,11 @@ namespace OperationsDashboardAddIns
   public class SearchNearbyFeatureAction : IFeatureAction
   {
     private client.Tasks.GeometryService _geometryTask;
-    //private int _bufferDistance = 1;
-    //private client.Tasks.LinearUnit _bufferUnit = client.Tasks.LinearUnit.Kilometer;
 
     #region Properties
-    //public DataSource TargetDS { get; set; }
-
-    //Need this property just to hold the name property when program is up everytime
-    //[DataMember]
-    //public string TargetDSName { get; set; }
-
-    public string TargetDataSourceId { get; private set; }
-
-    //[DataMember(Name = "bufferDistance")]
-    public int BufferDistance{get;private set;}
-    //{
-    //    get { return _bufferDistance; }
-    //    set { _bufferDistance = value; }
-    //}
-
-    //[DataMember(Name = "BufferDistanceUnit")]
-    public client.Tasks.LinearUnit BufferUnit { get; private set; }
-    //{
-    //    get { return _bufferUnit; }
-    //    set { _bufferUnit = value; }
-    //}
+    public string TargetDataSourceId { get; set; }
+    public int BufferDistance{get; set;}
+    public client.Tasks.LinearUnit BufferUnit { get;  set; }
     #endregion
 
     #region Constructor
@@ -80,9 +60,6 @@ namespace OperationsDashboardAddIns
       TargetDataSourceId = targetDataSourceId;
       BufferDistance = bufferDistance;
       BufferUnit = bufferUnit;
-      //TargetDS = OperationsDashboard.Instance.DataSources.FirstOrDefault();
-      //TargetDSName = TargetDS != null ? TargetDS.Name : string.Empty;
-
     }
     #endregion
 
@@ -95,7 +72,6 @@ namespace OperationsDashboardAddIns
     public bool Configure(System.Windows.Window owner)
     {
       //Pass the data source names to the config dialog so users can pick
-      //List<string> dataSourceNames = GetSelectableMapDataSources();
       SearchNearbyFeatureActionDialog searchDiag = new SearchNearbyFeatureActionDialog(TargetDataSourceId, BufferDistance, BufferUnit);
 
       //Show the configuration dialog
@@ -103,7 +79,6 @@ namespace OperationsDashboardAddIns
         return false;
 
       //Retrive the values from the configuration dialog
-      //TargetDS = searchDiag.SelectedDataSource;
       TargetDataSourceId = searchDiag.TargetDataSourceId;      
 
       BufferDistance = searchDiag.Distance;

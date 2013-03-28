@@ -22,43 +22,37 @@ using ESRI.ArcGIS.Client;
 namespace OperationsDashboardAddIns.Config
 {
     /// <summary>
-  /// Configuration dialog for the search nearby tool
+    /// Configuration dialog for the search nearby tool
     /// </summary>
-  public partial class SearchNearbyFeatureActionDialog : Window, IDataErrorInfo
+    public partial class SearchNearbyFeatureActionDialog : Window, IDataErrorInfo
     {
-    private bool dataNoError = true;
-    
-  
-   
-    private int _distance = 1;
+        private bool dataNoError = true;
+        private int _distance = 1;
         private List<LinearUnit> _units;
         private LinearUnit _selectedUnit;
 
         #region Properties
-    //public List<string> DataSourceNames
-    //    {
-    //        get { return _dataSourceNames; }
-    //        set { _dataSourceNames = value; }
-    //    }
+        //id of the data source from which the nearby features are to be selected
+        public string TargetDataSourceId { get; private set; }
+        //list of all the data sources which are selectable
+        public IEnumerable<string> SelectableDataSourceNames { get; private set; }
 
-    public string TargetDataSourceId{get;private set;}
-    public IEnumerable<string> SelectableDataSourceNames { get; private set; }
-    //public string SelectedDataSourceName { get; private set; }
-   
-
+        //buffer radius
         public int Distance
         {
             get { return _distance; }
-      set
-      { _distance = value; }
+            set
+            { _distance = value; }
         }
 
+        //list of radius units
         public List<LinearUnit> Units
         {
             get { return _units; }
             set { _units = value; }
         }
 
+        //selected buffer radius unit
         public LinearUnit SelectedUnit
         {
             get { return _selectedUnit; }
@@ -66,7 +60,7 @@ namespace OperationsDashboardAddIns.Config
         }
         #endregion
 
-    #region Constructors
+        #region Constructors
         public SearchNearbyFeatureActionDialog()
         {
             InitializeComponent();
@@ -74,46 +68,38 @@ namespace OperationsDashboardAddIns.Config
             base.DataContext = this;
         }
 
-    public SearchNearbyFeatureActionDialog(string targetDataSourceId, int BufferDistance, LinearUnit BufferUnit)
-      : this()
-    {
-      //Set the available data sources and the selected data source
-
-        SelectableDataSourceNames = GetSelectableMapDataSources();
-        if (SelectableDataSourceNames != null && SelectableDataSourceNames.Count() > 0)
-            TargetDataSourceId = string.IsNullOrEmpty(targetDataSourceId) ? OperationsDashboard.Instance.DataSources.Where(d => d.IsSelectable).FirstOrDefault().Id : targetDataSourceId;
-        //SelectedDataSourceName = OperationsDashboard.Instance.DataSources.Where(d => d.Id==TargetDataSourceId).FirstOrDefault().Name;
-        string selectedName=string.Empty;
-        foreach (ESRI.ArcGIS.OperationsDashboard.DataSource ds in OperationsDashboard.Instance.DataSources)
+        public SearchNearbyFeatureActionDialog(string targetDataSourceId, int BufferDistance, LinearUnit BufferUnit)
+            : this()
         {
-            if(ds.Id==TargetDataSourceId)
-                selectedName=ds.Name;
-                
+            //Set the available data sources and the selected data source
+            SelectableDataSourceNames = GetSelectableMapDataSources();
+            if (SelectableDataSourceNames != null && SelectableDataSourceNames.Count() > 0)
+                TargetDataSourceId = string.IsNullOrEmpty(targetDataSourceId) ? OperationsDashboard.Instance.DataSources.Where(d => d.IsSelectable).FirstOrDefault().Id : targetDataSourceId;
+            string selectedName = string.Empty;
+            foreach (ESRI.ArcGIS.OperationsDashboard.DataSource ds in OperationsDashboard.Instance.DataSources)
+            {
+                if (ds.Id == TargetDataSourceId)
+                    selectedName = ds.Name;
+            }
+
+            if (!string.IsNullOrEmpty(selectedName))
+                cmbLayer.SelectedValue = selectedName; //set the selected value in the layer combo to the selectedname
+
+            //Set buffer distance
+            if (BufferDistance > 0)
+                Distance = BufferDistance;
+
+            //Set the available units 
+            List<LinearUnit> units = new List<LinearUnit>() { LinearUnit.Kilometer, LinearUnit.Meter, LinearUnit.SurveyMile, LinearUnit.SurveyYard };
+            Units = units;
+
+            //Set the unit of the buffer radius
+            if (BufferUnit == 0)
+                SelectedUnit = Units[0];
+            else
+                SelectedUnit = BufferUnit;
         }
-
-        if(!string.IsNullOrEmpty(selectedName))
-            cmbLayer.SelectedValue=selectedName;
-       
-      //if ((string.IsNullOrEmpty(SelectedDSName)) && (DataSourceNames.Count > 0))
-      //  SelectedDataSourceName = DataSourceNames[0];
-      //else
-      //  SelectedDataSourceName = SelectedDSName;
-
-      //Set buffer distance
-      if (BufferDistance > 0)
-        Distance = BufferDistance;
-
-      //Set the available units 
-      List<LinearUnit> units = new List<LinearUnit>() { LinearUnit.Kilometer, LinearUnit.Meter, LinearUnit.SurveyMile, LinearUnit.SurveyYard };
-      Units = units;
-
-      //Set the unit of the buffer radius
-      if (BufferUnit == 0)
-      SelectedUnit = Units[0];
-      else
-        SelectedUnit = BufferUnit;
-    }
-    #endregion
+        #endregion
 
         #region Validate distance text box input
 
@@ -163,44 +149,36 @@ namespace OperationsDashboardAddIns.Config
         /// </summary>
         private void OK_HasExecuted(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
         {
-      //SelectedDataSource = OperationsDashboard.Instance.DataSources.FirstOrDefault(ds => ds.Name == SelectedDataSourceName); 
             DialogResult = true;
         }
         #endregion
 
         private List<string> GetSelectableMapDataSources()
         {
-          List<string> selectableLayerNames = new List<string>();
+            List<string> selectableLayerNames = new List<string>();
 
-           IEnumerable<IWidget> mapWidgets = OperationsDashboard.Instance.Widgets.Where(w => w is MapWidget);
-           if (mapWidgets != null && mapWidgets.Count() > 0)
-           {               
-               foreach (ESRI.ArcGIS.OperationsDashboard.DataSource dataSource in OperationsDashboard.Instance.DataSources)
-               {
-                   //FeatureLayer fl = mapW.FindFeatureLayer(dataSource);
-                   if (dataSource.IsSelectable)
-                       //The following line will only add the name a feature layer when it appears the first time
-                       //Hence, if 2 feature layers have the same name and they are in 2 map widgets
-                       //only the one in the first widget (the widget created earlier) will be added
-                       if (!selectableLayerNames.Contains(getDataSourceName(dataSource.Name)))
-                           selectableLayerNames.Add(getDataSourceName(dataSource.Name));
-               }
-           }
-          
+            IEnumerable<IWidget> mapWidgets = OperationsDashboard.Instance.Widgets.Where(w => w is MapWidget);
+            if (mapWidgets != null && mapWidgets.Count() > 0)
+            {
+                foreach (ESRI.ArcGIS.OperationsDashboard.DataSource dataSource in OperationsDashboard.Instance.DataSources)
+                {
+                    if (dataSource.IsSelectable)
+                        if (!selectableLayerNames.Contains(getDataSourceName(dataSource.Name)))
+                            selectableLayerNames.Add(getDataSourceName(dataSource.Name));
+                }
+            }
+
             return selectableLayerNames;
         }
 
         private void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            
-           //TargetDataSourceId= OperationsDashboard.Instance.DataSources.Where(d => d.Id == targetDataSourceId && d.IsSelectable).FirstOrDefault()
-            TargetDataSourceId = OperationsDashboard.Instance.DataSources.Where(d => string.Compare(d.Name,cmbLayer.SelectedValue.ToString().Trim())==0).FirstOrDefault().Id;
-            //SelectedDataSourceName=OperationsDashboard.Instance.DataSources.Where(d => d.Id == TargetDataSourceId).FirstOrDefault().Name;
+            TargetDataSourceId = OperationsDashboard.Instance.DataSources.Where(d => string.Compare(d.Name, cmbLayer.SelectedValue.ToString().Trim()) == 0).FirstOrDefault().Id;
         }
 
         private string getDataSourceName(string selectionName)
         {
-            return selectionName.Substring(0,selectionName.IndexOf(" Selection"));
+            return selectionName.Substring(0, selectionName.IndexOf(" Selection"));
         }
     }
 }

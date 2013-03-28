@@ -193,18 +193,7 @@ namespace OperationsDashboardAddIns
       DataSourceId = null;
     }
 
-    // this method is called for data source configured for the widget
-    public async void OnRefresh(ESRI.ArcGIS.OperationsDashboard.DataSource dataSource)
-    {
-      if (!String.IsNullOrEmpty(DataSourceId))
-      {
-        DataSource = dataSource;
-        FeatureActionContextMenu.DataSource = DataSource;
 
-        setUpFeatureGrid();
-      }
-      await PopulateDataGridAsync();
-    }
 
 
     #endregion
@@ -305,6 +294,19 @@ namespace OperationsDashboardAddIns
 
     #region Presentation
 
+    //this method is called for data source configured for the widget
+    public async void OnRefresh
+        (ESRI.ArcGIS.OperationsDashboard.DataSource dataSource)
+    {
+      if (!String.IsNullOrEmpty(DataSourceId))
+      {
+        DataSource = dataSource;
+        FeatureActionContextMenu.DataSource = DataSource;
+
+        setUpFeatureGrid();
+      }
+      await PopulateDataGridAsync();
+    }
 
     //list of fields to be shown in the data grid
     public IEnumerable<Field> ValidFields
