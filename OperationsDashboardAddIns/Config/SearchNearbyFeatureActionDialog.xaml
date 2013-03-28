@@ -1,0 +1,38 @@
+﻿<Window x:Class="OperationsDashboardAddIns.Config.SearchNearbyFeatureActionDialog"
+          xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Configure Search" Height="135" Width="310" SizeToContent="WidthAndHeight">
+    <Grid>
+
+        <Grid.CommandBindings>
+            <CommandBinding Command="New" CanExecute="OK_CanExecute" Executed="OK_HasExecuted"/>
+        </Grid.CommandBindings>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="auto"/>
+        </Grid.ColumnDefinitions>
+        <TextBlock Grid.Row="0" Grid.Column="0" 
+              HorizontalAlignment="Left" Margin="5,5,5,5" Name="txtChooseLayer" Text="Layer to Search:" VerticalAlignment="Top" />
+        <ComboBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" 
+              HorizontalAlignment="Left" Margin="5,5,5,5" Name="cmbLayer" MinWidth="160" MaxWidth="200"
+              ItemsSource="{Binding Path=SelectableDataSourceNames}" SelectionChanged="OnSelectionChanged" />
+        <TextBlock Grid.Row="1" Grid.Column="0" 
+                HorizontalAlignment="Left" Margin="5,5,5,5" Name="txtSetDistance" Text="Radius to Search:" VerticalAlignment="Top" />
+        <TextBox Grid.Column="1" Grid.Row="1" 
+                HorizontalAlignment="Left" Margin="5,5,0,0" Name="txtDistance" MinWidth="50" ToolTip="Distance must be integer and >0"                                 
+                Text="{Binding Path=Distance, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"
+                Validation.Error="txtDistance_DataError"/>
+        <ComboBox Grid.Row="1" Grid.Column="2" 
+              HorizontalAlignment="Left" Margin="5,5,5,5" Name="cmbUnit" MinWidth="100" MaxWidth="150"
+              ItemsSource="{Binding Path=Units}" SelectedValue="{Binding Path=SelectedUnit, Mode=TwoWay}"/>
+        <Button Grid.Row="2" Grid.Column="2" HorizontalAlignment="Right" Margin="5,5,5,5" Name="btnOK" VerticalAlignment="Top" MinWidth="50" MinHeight="25" Content="OK" 
+                Command="New"/>
+    </Grid>
+</Window>
