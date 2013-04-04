@@ -17,7 +17,7 @@ Add-in for Operations Dashboard for ArcGIS containing a table widget and search 
 2. Open and compile project in Visual Studio 2012.
 3. Update Project Debug properties to correctly locate add-in build path in /addinpath command line argument.
 4. Run project in Debug mode.
-5. When Operations Dashboard application starts, edit an operation view that contains a map widget, choose Earthquake Widget from Add Widget dialog box, anc click OK. 
+5. When Operations Dashboard application starts, edit an operation view that contains a map widget, choose Earthquake Widget from Add Widget dialog box, and click OK. 
 6. Select a map widget for the earthquake widget to consume and click OK.
 7. The widget should be added to the operation view. Click on an earthquake in the list to highlight it in the map.
 
