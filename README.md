@@ -22,7 +22,8 @@ Add-in for Operations Dashboard for ArcGIS containing a table widget and search 
 7. The widget should be added to the operation view. Click on an earthquake in the list to highlight it in the map.
 
 **If running with a newer version of the SDK than 10.1.1, it will be necessary to update the file locations found in 'OperationsDashboardAddIns.csproj'**
-<img src="https://github.com/jgravois/tableandsearch-opsdashboard-addin/blob/master/ideIntegration.png" alt="screenshot" />
+
+<img src="https://raw.githubusercontent.com/jgravois/tableandsearch-opsdashboard-addin/master/ideIntegration.png" alt="screenshot" width="450" height="300" />
 
 Alternatively, build the project, and upload the .opdashboardaddin file from the build output directory to ArcGIS Online, and then download using Manage Add-Ins in Operations Dashboard, then follow the steps above from step 5.
 
